@@ -13,13 +13,17 @@ class TCPClient:
         self.socket.connect((self.serverName, self.serverPort))
 
         while True:
-            message = input("Data to be sent over TCP: ")
+            try:
+                message = input("Data to be sent over TCP: ")
 
-            self.socket.send(message.encode("utf-8"))
-            if message == "close":
+                self.socket.send(message.encode("utf-8"))
+                if message == "close":
+                    self.socket.close()
+                    break
+                data = self.socket.recv(1024)
+            except ConnectionResetError:
+                print("TCP connection is shut down unexpectedly.")
                 self.socket.close()
-                break
-            data = self.socket.recv(1024)
 
             print("The message recieved", data)
 
